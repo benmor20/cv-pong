@@ -19,7 +19,7 @@ def add_tuples(*tuples: tuple[int, ...]) -> tuple[int, ...]:
     ans = tuple(0 for _ in tuples[0])
     for tup in tuples:
         if len(tup) != len(ans):
-            raise ValueError(f'All tuples must be of same length. Found length'
+            raise ValueError(f'All tuples must be of same length. Found length '
                              f'{len(ans)} and {len(tup)}')
         ans = tuple(a + tup[i] for i, a in enumerate(ans))
     return ans

@@ -53,7 +53,7 @@ class PongModel:
         """
         # Find next position
         effective_vel = scale_tuple(self.ball_vel, 1.0 / FRAME_RATE)
-        self._ball_pos = self.ball_pos + effective_vel
+        self._ball_pos = add_tuples(self.ball_pos, effective_vel)
 
         # Bounce the ball off top/bottom wall
         top_of_ball = self.ball_pos[1] - BALL_SIZE // 2
