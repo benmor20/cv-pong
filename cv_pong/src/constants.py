@@ -10,7 +10,7 @@ FRAME_RATE = 60  # frames per second
 
 # Court constants
 WALL_THICKNESS = 20  # pixels
-PADDLE_DIST_FROM_EDGE = 20  # pixels
+PADDLE_DIST_FROM_EDGE = 40  # pixels
 
 
 # Ball constants
@@ -22,6 +22,8 @@ BALL_SPEED_FACTOR = 1.05
 # Paddle constants
 PADDLE_HEIGHT = 100
 PADDLE_WIDTH = 20
+KEYBOARD_PADDLE_SPEED = 200
+KEYBOARD_PADDLE_SPEED_PER_FRAME = KEYBOARD_PADDLE_SPEED // FRAME_RATE
 
 
 # Colors
