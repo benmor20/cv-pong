@@ -66,6 +66,10 @@ class KeyboardController(PongController):
         self._update_key_presses()
 
         if self._up_key_pressed and not self._down_key_pressed:
-            self._model.paddle_location -= KEYBOARD_PADDLE_SPEED_PER_FRAME
+            self._model.move_paddle(
+                self._model.paddle_location - KEYBOARD_PADDLE_SPEED_PER_FRAME
+            )
         elif self._down_key_pressed and not self._up_key_pressed:
-            self._model.paddle_location += KEYBOARD_PADDLE_SPEED_PER_FRAME
+            self._model.move_paddle(
+                self._model.paddle_location + KEYBOARD_PADDLE_SPEED_PER_FRAME
+            )

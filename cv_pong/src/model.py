@@ -8,9 +8,6 @@ from .utils import add_tuples, scale_tuple, do_rects_intersect
 class PongModel:
     """
     A model holding the current state of the game of Pong
-
-    Attributes:
-        paddle_location: an int, the Y position of the center of the paddle
     """
     def __init__(self):
         """
@@ -20,7 +17,7 @@ class PongModel:
         # So Y increases down (to match OpenCV)
         self._ball_pos = scale_tuple(WINDOW_SIZE, 0.5)
         self._ball_vel = (float(BALL_INITIAL_SPEED), -float(BALL_INITIAL_SPEED))
-        self.paddle_location = WINDOW_HEIGHT // 2
+        self._paddle_location = WINDOW_HEIGHT // 2
         self._points = 0
 
     @property
@@ -41,11 +38,33 @@ class PongModel:
         return self._ball_vel
 
     @property
+    def paddle_location(self) -> int:
+        """
+        :return: an int, the y-pixel coordinate of the center of the paddle
+        """
+        return self._paddle_location
+
+    @property
     def points(self) -> int:
         """
         :return: an int, the number of points the player has scored
         """
         return self._points
+
+    def move_paddle(self, coordinate_to_move_paddle: int):
+        """
+        Move the paddle to the specified coordinate
+
+        If the given position is out of range, will move the paddle to the edge
+        of the board in the direction of that range
+
+        :param coordinate_to_move_paddle: an int, the y pixel coordinate to set
+            the middle of the paddle to
+        """
+        min_pos = WALL_THICKNESS + PADDLE_HEIGHT // 2
+        max_pos = WINDOW_HEIGHT - min_pos
+        self._paddle_location = min(max(coordinate_to_move_paddle, min_pos),
+                                    max_pos)
 
     def update(self):
         """
