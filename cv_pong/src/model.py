@@ -2,7 +2,7 @@
 A model the current game state of a game of Pong
 """
 from .constants import *
-from .utils import add_tuples, scale_tuple
+from .utils import add_tuples, scale_tuple, do_rects_intersect
 
 
 class PongModel:
@@ -19,7 +19,7 @@ class PongModel:
         # All X/Y positions are defined from the top left of the screen
         # So Y increases down (to match OpenCV)
         self._ball_pos = scale_tuple(WINDOW_SIZE, 0.5)
-        self._ball_vel = (BALL_INITIAL_SPEED, -BALL_INITIAL_SPEED)
+        self._ball_vel = (float(BALL_INITIAL_SPEED), -float(BALL_INITIAL_SPEED))
         self.paddle_location = WINDOW_HEIGHT // 2
         self._points = 0
 
@@ -56,7 +56,7 @@ class PongModel:
         self._ball_pos = add_tuples(self.ball_pos, effective_vel)
 
         # Bounce the ball off top/bottom wall
-        top_of_ball = self.ball_pos[1] - BALL_SIZE // 2
+        top_of_ball = int(self.ball_pos[1]) - BALL_SIZE // 2
         bottom_of_ball = top_of_ball + BALL_SIZE
         if top_of_ball < WALL_THICKNESS \
                 or bottom_of_ball > WINDOW_HEIGHT - WALL_THICKNESS:
@@ -65,14 +65,26 @@ class PongModel:
         # Bounce the ball off the back wall
         # One point and increase speed
         # TODO speed caps or deal with absurd speeds
-        left_of_ball = self.ball_pos[0] - BALL_SIZE // 2
+        left_of_ball = int(self.ball_pos[0]) - BALL_SIZE // 2
         if left_of_ball < WALL_THICKNESS:
-            self._ball_vel = -self.ball_vel[0], self.ball_vel[1]
-            self._ball_vel = scale_tuple(self.ball_vel, BALL_SPEED_FACTOR)
+            self._ball_vel = abs(self.ball_vel[0]), self.ball_vel[1]
+            self._ball_vel = tuple(
+                float(int(val * BALL_SPEED_FACTOR)) for val in self.ball_vel
+            )  # Round off but keep type as float
             self._points += 1
+
+        # Bounce the ball off the paddle
+        ball_rect = left_of_ball, top_of_ball, BALL_SIZE, BALL_SIZE
+        paddle_rect = (
+            WINDOW_WIDTH - PADDLE_DIST_FROM_EDGE - PADDLE_WIDTH,
+            self.paddle_location - PADDLE_HEIGHT // 2,
+            PADDLE_WIDTH, PADDLE_HEIGHT
+        )
+        if do_rects_intersect(ball_rect, paddle_rect):
+            self._ball_vel = -abs(self.ball_vel[0]), self.ball_vel[1]
 
         # Missed - minus one point
         if self.ball_pos[0] > WINDOW_WIDTH:
             self._points -= 1
             self._ball_pos = scale_tuple(WINDOW_SIZE, 0.5)
-            # Dont need to change velocity - its already moving right
+            # Don't need to change velocity - its already moving right

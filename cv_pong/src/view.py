@@ -57,13 +57,14 @@ class PygameView(PongView):
             self._model.ball_pos,
             scale_tuple((BALL_SIZE, BALL_SIZE), -0.5)
         )
-        ball_rect = pygame.Rect(*top_left_ball, BALL_SIZE, BALL_SIZE)
+        ball_rect = pygame.Rect(int(top_left_ball[0]), int(top_left_ball[1]),
+                                BALL_SIZE, BALL_SIZE)
         self._screen.fill(BALL_COLOR, ball_rect)
 
         # Draw paddle
         paddle_rect = pygame.Rect(
             WINDOW_WIDTH - PADDLE_DIST_FROM_EDGE - PADDLE_WIDTH,
-            self._model.paddle_location - PADDLE_HEIGHT // 2,
+            int(self._model.paddle_location) - PADDLE_HEIGHT // 2,
             PADDLE_WIDTH, PADDLE_HEIGHT
         )
         self._screen.fill(PADDLE_COLOR, paddle_rect)
