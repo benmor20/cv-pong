@@ -4,6 +4,7 @@ A module defining various controllers for one player in Pong
 from abc import ABC, abstractmethod
 import cv2
 import mediapipe as mp
+import numpy as np
 import pygame
 from pygame import locals
 from .constants import *
@@ -95,6 +96,15 @@ class CVController(PongController):
         super().__init__(model)
         self._video_capture = None
         self._hand_processor = None
+        self._camera_frame = np.zeros((*WINDOW_SIZE, 3), dtype=np.uint8)
+
+    @property
+    def camera_frame(self) -> np.ndarray:
+        """
+        :return: the last image taken from the camera, with visualization of
+            the hand that is being tracked, if in frame
+        """
+        return self._camera_frame
 
     def initialize(self, *cam_args, **cam_kwargs):
         """
@@ -117,9 +127,16 @@ class CVController(PongController):
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         hands = self._hand_processor.process(rgb_frame)
         if hands.multi_hand_landmarks:
-            landmarks = hands.multi_hand_landmarks[0].landmark
+            hand = hands.multi_hand_landmarks[-1]
+            landmarks = hand.landmark
             # estimated middle of hand is between base of palm and base of
             # middle finger
             mid_hand = (landmarks[0].y + landmarks[9].y) / 2
             paddle_position = int(mid_hand * WINDOW_HEIGHT)
             self._model.move_paddle(paddle_position)
+            mp.solutions.drawing_utils.draw_landmarks(
+                rgb_frame, hand, mp.solutions.hands.HAND_CONNECTIONS
+            )
+        # How numpy defines up/down is different from Pygame :/
+        self._camera_frame = np.flipud(cv2.resize(rgb_frame, WINDOW_SIZE)
+                                       .swapaxes(0, 1))

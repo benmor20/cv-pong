@@ -12,10 +12,11 @@ from src.controller import CVController
 def main():
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
+    screen.set_alpha(255, pygame.SRCALPHA)
 
     model = PongModel()
-    view = PygameView(model, screen)
     controller = CVController(model)
+    view = PygameView(model, screen, controller)
     controller.initialize()
 
     clock = pygame.time.Clock()
