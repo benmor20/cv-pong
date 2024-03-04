@@ -69,4 +69,8 @@ class PygameView(PongView):
         )
         self._screen.fill(PADDLE_COLOR, paddle_rect)
 
+        # Draw score
+        score = SCORE_FONT.render(str(self._model.points), True, SCORE_COLOR)
+        self._screen.blit(score, score.get_rect(midtop=SCORE_TOP_CENTER))
+
         pygame.display.flip()
