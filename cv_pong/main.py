@@ -6,7 +6,7 @@ from pygame import locals
 from src.constants import *
 from src.model import PongModel
 from src.view import PygameView
-from src.controller import KeyboardController
+from src.controller import CVController
 
 
 def main():
@@ -15,7 +15,8 @@ def main():
 
     model = PongModel()
     view = PygameView(model, screen)
-    controller = KeyboardController(model)
+    controller = CVController(model)
+    controller.initialize()
 
     clock = pygame.time.Clock()
     exited = False

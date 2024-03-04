@@ -16,7 +16,7 @@ PADDLE_DIST_FROM_EDGE = 40  # pixels. distance to right edge of paddle
 # Ball constants
 BALL_SIZE = 50  # pixels
 BALL_INITIAL_SPEED = 150  # pixels in each direction per second
-BALL_SPEED_FACTOR = 1.05
+BALL_SPEED_FACTOR = 1.2
 
 
 # Paddle constants
