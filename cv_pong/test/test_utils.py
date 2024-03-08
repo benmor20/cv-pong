@@ -26,6 +26,8 @@ ADD_TUPLES_CASES = [
     ([(1, 2, 3), (-1, -2, -3)], (0, 0, 0)),
     ([(-1, -2, -3), (-4, -5, -6)], (-5, -7, -9)),
     ([(1, 2, 3), (-4, -5, -6)], (-3, -3, -3)),
+    # Floats
+    ([(0.1, 0.2, 0.3), (0.4, 0.5, 0.6)], (0.5, 0.7, 0.9)),
 ]
 
 
@@ -73,14 +75,18 @@ SCALE_TUPLE_CASES = [
     ((-10, 20, -30), 0.5, (-5, 10, -15)),
     # Negative scale
     ((1, 2, 3), -2, (-2, -4, -6)),
-    # Rounding
+    # Rounding for ints
     ((1, 2, 3, 4, 5), 1.5, (1, 3, 4, 6, 7)),
     ((20, 21, 22, 23, 24, 25, 26), 0.25, (5, 5, 5, 5, 6, 6, 6)),
-]
+    # Float inputs
+    ((1.0, 2.0, 3.0), 2.0, (2.0, 4.0, 6.0)),
+    # Floats don't round
+    ((1.0, 2.0, 3.0), 0.5, (0.5, 1.0, 1.5)),
 
 
 @pytest.mark.parametrize("tuple_list, answer", ADD_TUPLES_CASES)
-def test_add_tuples(tuple_list: list[tuple[int, ...]], answer: tuple[int, ...]):
+def test_add_tuples(tuple_list: list[tuple[float | int, ...]],
+                    answer: tuple[float | int, ...]):
     """
     Test the default behavior of the add_tuples function
 
@@ -99,7 +105,7 @@ def test_add_tuples_no_input():
 
 
 @pytest.mark.parametrize("tuple_list", ADD_TUPLES_DIFF_LENGTHS_CASES)
-def test_add_tuple_wrong_length(tuple_list: list[tuple[int, ...]]):
+def test_add_tuple_wrong_length(tuple_list: list[tuple[float | int, ...]]):
     """
     Test that add_tuples throws a value error when the inputs are not all the
         same length.
@@ -112,8 +118,8 @@ def test_add_tuple_wrong_length(tuple_list: list[tuple[int, ...]]):
 
 
 @pytest.mark.parametrize("to_scale, scale_factor, answer", SCALE_TUPLE_CASES)
-def test_scale_tuple(to_scale: tuple[int, ...], scale_factor: float,
-                     answer: tuple[int, ...]):
+def test_scale_tuple(to_scale: tuple[float | int, ...], scale_factor: float,
+                     answer: tuple[float | int, ...]):
     """
     Test the scale_tuple function
 
