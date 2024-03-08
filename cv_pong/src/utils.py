@@ -1,7 +1,6 @@
 """
 Module containing utility functions for Pong
 """
-from __future__ import annotations
 
 
 def add_tuples(*tuples: tuple[float | int, ...]) -> tuple[float | int, ...]:

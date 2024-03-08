@@ -1,8 +1,6 @@
 """
 A module defining different views for the Pong game
 """
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 import pygame
 from .constants import *
