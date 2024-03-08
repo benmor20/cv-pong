@@ -102,6 +102,43 @@ SCALE_FLOAT_TUPLE_CASES = [
     ((1.0, 2.0, 3.0), 0.5, (0.5, 1.0, 1.5)),
 ]
 
+# Each element is a tuple containing:
+# - range 1
+# - range 2
+# - a bool, whether range 1 and range 2 overlap
+DO_RANGES_OVERLAP_CASES = [
+    # range1 < range2
+    (range(-10, -5), range(5, 10), False),
+    (range(5, 10), range(11, 20), False),
+    # range1.start < range2.start < range1.stop < range2.stop
+    (range(-10, 0), range(-5, 15), True),
+    # range1 fully within range2
+    (range(20, 30), range(10, 500), True),
+    # range2.start < range1.start < range2.stop < range1.stop
+    (range(-5, 15), range(-10, 0), True),
+    # range1 > range2
+    (range(5, 10), range(-10, -5), False),
+    (range(11, 20), range(5, 10), False),
+    # range2 fully within range1
+    (range(100), range(40, 75), True),
+    # one stop == other start
+    (range(5, 10), range(10, 20), True),
+    (range(-50, 0), range(10), True),
+    (range(10, 20), range(5, 10), True),
+    (range(10), range(-50, 0), True),
+    # start at same place
+    (range(10, 20), range(10, 30), True),
+    (range(10, 30), range(10, 20), True),
+    # End at same place
+    (range(10, 30), range(20, 30), True),
+    (range(20, 30), range(10, 30), True),
+    # Same range
+    (range(10, 20), range(10, 20), True),
+    # Size 1
+    (range(1, 1), range(10), True),
+    (range(1, 1), range(1, 10), True)
+]
+
 
 @pytest.mark.parametrize("tuple_list, answer", ADD_TUPLES_CASES)
 def test_add_tuples(tuple_list: list[tuple[int, ...]], answer: tuple[int, ...]):
@@ -175,3 +212,15 @@ def test_scale_float_tuple(to_scale: tuple[float, ...], scale_factor: float,
     """
     for ele, ans in zip(scale_tuple(to_scale, scale_factor), answer):
         assert pytest.approx(ele) == ans
+
+
+@pytest.mark.parametrize("range1, range2, overlap", DO_RANGES_OVERLAP_CASES)
+def test_do_ranges_overlap(range1: range, range2: range, overlap: bool):
+    """
+    Test do_ranges_overlap function
+
+    :param range1: one range to test overlap with
+    :param range2: another range to test overlap with
+    :param overlap: a bool, whether the ranges overlap
+    """
+    assert do_ranges_overlap(range1, range2) == overlap
