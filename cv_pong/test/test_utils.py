@@ -26,8 +26,22 @@ ADD_TUPLES_CASES = [
     ([(1, 2, 3), (-1, -2, -3)], (0, 0, 0)),
     ([(-1, -2, -3), (-4, -5, -6)], (-5, -7, -9)),
     ([(1, 2, 3), (-4, -5, -6)], (-3, -3, -3)),
-    # Floats
+]
+
+
+ADD_FLOAT_TUPLES_CASES = [
+    # Single input case
+    ([(1.,)], (1.,)),
+    ([(0.1, 0.2, 0.3)], (0.1, 0.2, 0.3)),
+    # Two tuples
+    ([(0.1,), (0.2,)], (0.3,)),
     ([(0.1, 0.2, 0.3), (0.4, 0.5, 0.6)], (0.5, 0.7, 0.9)),
+    # Many tuples
+    ([(0.1, 0.2, 0.3), (0.4, 0.5, 0.6), (0.2, 0.4, 0.6), (0.1, 0.7, 0.4)],
+     (0.8, 1.8, 1.9)),
+    ([(2.1, 2.2, 2.3, 2.4, 2.5, 2.6), (1.6, 1.5, 1.4, 1.3, 1.2, 1.1),
+      (4.0, 2.0, 1.0, 2.0, 1.0, 2.0), (0.1, 0.1, 0.2, 0.1, 0.1, 0.2)],
+     (7.8, 5.8, 4.9, 5.8, 4.8, 5.9)),
 ]
 
 
@@ -78,15 +92,19 @@ SCALE_TUPLE_CASES = [
     # Rounding for ints
     ((1, 2, 3, 4, 5), 1.5, (1, 3, 4, 6, 7)),
     ((20, 21, 22, 23, 24, 25, 26), 0.25, (5, 5, 5, 5, 6, 6, 6)),
+]
+
+
+SCALE_FLOAT_TUPLE_CASES = [
     # Float inputs
     ((1.0, 2.0, 3.0), 2.0, (2.0, 4.0, 6.0)),
     # Floats don't round
     ((1.0, 2.0, 3.0), 0.5, (0.5, 1.0, 1.5)),
+]
 
 
 @pytest.mark.parametrize("tuple_list, answer", ADD_TUPLES_CASES)
-def test_add_tuples(tuple_list: list[tuple[float | int, ...]],
-                    answer: tuple[float | int, ...]):
+def test_add_tuples(tuple_list: list[tuple[int, ...]], answer: tuple[int, ...]):
     """
     Test the default behavior of the add_tuples function
 
@@ -94,6 +112,19 @@ def test_add_tuples(tuple_list: list[tuple[float | int, ...]],
     :param answer: the tuple that is the desired result of the tuples added
     """
     assert add_tuples(*tuple_list) == answer
+
+
+@pytest.mark.parametrize("tuple_list, answer", ADD_FLOAT_TUPLES_CASES)
+def test_add_float_tuples(tuple_list: list[tuple[float, ...]],
+                          answer: tuple[float, ...]):
+    """
+    Test the default behavior of the add_tuples function
+
+    :param tuple_list: the list of tuples to add together
+    :param answer: the tuple that is the desired result of the tuples added
+    """
+    for ele, ans in zip(add_tuples(*tuple_list), answer):
+        assert pytest.approx(ele) == ans
 
 
 def test_add_tuples_no_input():
@@ -118,8 +149,8 @@ def test_add_tuple_wrong_length(tuple_list: list[tuple[float | int, ...]]):
 
 
 @pytest.mark.parametrize("to_scale, scale_factor, answer", SCALE_TUPLE_CASES)
-def test_scale_tuple(to_scale: tuple[float | int, ...], scale_factor: float,
-                     answer: tuple[float | int, ...]):
+def test_scale_tuple(to_scale: tuple[int, ...], scale_factor: float,
+                     answer: tuple[int, ...]):
     """
     Test the scale_tuple function
 
@@ -129,3 +160,18 @@ def test_scale_tuple(to_scale: tuple[float | int, ...], scale_factor: float,
         by scale_factor
     """
     assert scale_tuple(to_scale, scale_factor) == answer
+
+
+@pytest.mark.parametrize("to_scale, scale_factor, answer", SCALE_TUPLE_CASES)
+def test_scale_float_tuple(to_scale: tuple[float, ...], scale_factor: float,
+                     answer: tuple[float, ...]):
+    """
+    Test the scale_tuple function
+
+    :param to_scale: the tuple of floats to scale
+    :param scale_factor: a float, the factor to scale the tuple by
+    :param answer: the tuple of floats that should result from scaling to_scale
+        by scale_factor
+    """
+    for ele, ans in zip(scale_tuple(to_scale, scale_factor), answer):
+        assert pytest.approx(ele) == ans
