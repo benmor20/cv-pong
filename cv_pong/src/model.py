@@ -81,20 +81,25 @@ class PongModel:
         # Bounce the ball off top/bottom wall
         top_of_ball = int(self.ball_pos[1]) - BALL_SIZE // 2
         bottom_of_ball = top_of_ball + BALL_SIZE
-        if top_of_ball < WALL_THICKNESS \
-                or bottom_of_ball > WINDOW_HEIGHT - WALL_THICKNESS:
-            self._ball_vel = self.ball_vel[0], -self.ball_vel[1]
+        if top_of_ball < WALL_THICKNESS:
+            self._ball_vel = self.ball_vel[0], abs(self.ball_vel[1])
+        elif bottom_of_ball > WINDOW_HEIGHT - WALL_THICKNESS:
+            self._ball_vel = self.ball_vel[0], -abs(self.ball_vel[1])
 
         # Bounce the ball off the back wall
         # One point and increase speed
-        # TODO speed caps or deal with absurd speeds
         left_of_ball = int(self.ball_pos[0]) - BALL_SIZE // 2
         if left_of_ball < WALL_THICKNESS:
             self._ball_vel = abs(self.ball_vel[0]), self.ball_vel[1]
             self._ball_vel = tuple(
                 float(int(val * BALL_SPEED_FACTOR)) for val in self.ball_vel
             )  # Round off but keep type as float
+            self._ball_vel = (
+                min(max(self.ball_vel[0], -BALL_MAX_SPEED), BALL_MAX_SPEED),
+                min(max(self.ball_vel[1], -BALL_MAX_SPEED), BALL_MAX_SPEED)
+            )  # constrain speed
             self._points += 1
+            print(self.ball_vel)
 
         # Bounce the ball off the paddle
         ball_rect = left_of_ball, top_of_ball, BALL_SIZE, BALL_SIZE
