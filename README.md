@@ -1,10 +1,13 @@
-# cv-pong
-A one-week coding challenge to create a version of Pong controlled through hand-tracking
+# CV Pong
 
-## Requirements
+A one-week coding challenge to create a version of Pong controlled through hand-tracking.
 
-* Python 3.10
-* Libraries in requirements.txt
+## Setup
+
+First, download this repository to your computer. Before running it, ensure you are running Python 3.10. If you are
+unsure, you can [download python 3.10 for your system here](https://www.python.org/downloads/release/python-3100/).
+Once you have, install the necessary libraries by running `pip install -r requirements.txt` from the `cv-pong`
+directory. Finally, to run the code, `cd` into `cv_pong` and run `main.py` using your install of Python 3.10
 
 ## Bibliography
 
