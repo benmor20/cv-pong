@@ -9,31 +9,35 @@ class PongModel:
     """
     A model holding the current state of the game of Pong
     """
-    def __init__(self):
+    def __init__(self,
+                 ball_pos: tuple[int, int] = scale_tuple(WINDOW_SIZE, 0.5),
+                 ball_vel: tuple[float, float] = (float(BALL_INITIAL_SPEED),
+                                                  -float(BALL_INITIAL_SPEED)),
+                 paddle_location: int = WINDOW_HEIGHT // 2,
+                 ):
         """
         Initialize a new game of Pong
         """
         # All X/Y positions are defined from the top left of the screen
         # So Y increases down (to match OpenCV)
-        self._ball_pos = scale_tuple(WINDOW_SIZE, 0.5)
-        self._ball_vel = (float(BALL_INITIAL_SPEED), -float(BALL_INITIAL_SPEED))
-        self._paddle_location = WINDOW_HEIGHT // 2
+        self._ball_pos = tuple(float(p) for p in ball_pos)
+        self._ball_vel = ball_vel
+        self._paddle_location = 0
+        self.move_paddle(paddle_location)
         self._points = 0
 
     @property
     def ball_pos(self) -> tuple[int, int]:
         """
-        :return: the position of the ball as a complex number, where the real
-            part gives the distance in pixels from the left of the screen, and
-            the complex part gives the distance in pixels from the top
+        :return: the x/y position of the ball, where x is pixels from the left
+            and y is pixels from the top
         """
-        return self._ball_pos
+        return int(self._ball_pos[0]), int(self._ball_pos[1])
 
     @property
-    def ball_vel(self) -> tuple[int, int]:
+    def ball_vel(self) -> tuple[float, float]:
         """
-        :return: the velocity of the ball as a complex number, represented in
-            pixels per second
+        :return: the x/y velocity of the ball
         """
         return self._ball_vel
 
