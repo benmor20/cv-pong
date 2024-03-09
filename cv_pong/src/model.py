@@ -99,7 +99,6 @@ class PongModel:
                 min(max(self.ball_vel[1], -BALL_MAX_SPEED), BALL_MAX_SPEED)
             )  # constrain speed
             self._points += 1
-            print(self.ball_vel)
 
         # Bounce the ball off the paddle
         ball_rect = left_of_ball, top_of_ball, BALL_SIZE, BALL_SIZE
